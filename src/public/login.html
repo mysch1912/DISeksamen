@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="da">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login - Spin & Vind</title>
+    <link rel="stylesheet" href="view.css" />
+  </head>
+  <body style="flex-direction: column; justify-content: center; align-items: center;">
+    <h1 class="title">SPIN & VIND</h1>
+    <p class="subtitle">Understory</p>
+
+    <form
+      action="/auth/login"
+      method="POST"
+      style="background:#fff; padding:20px 30px; border-radius:12px; display:flex; flex-direction:column; gap:10px; min-width:260px;"
+    >
+      <label>
+        Navn:
+        <input type="text" name="name" required />
+      </label>
+
+      <label>
+        Telefon:
+        <input type="text" name="phone" placeholder="+4512345678" required />
+      </label>
+
+      <button type="submit" style="margin-top:10px;">Log ind</button>
+    </form>
+  </body>
+</html>

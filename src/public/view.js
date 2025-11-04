@@ -124,4 +124,46 @@ btn.addEventListener("click", () => {
     };
 
   }, 5000);
+
+  // ... hele din eksisterende kode ovenfor ...
+
+// NY: helper til at sende vinder til serveren
+async function sendWinToServer(prize) {
+  try {
+    const res = await fetch("/game/spin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prize })
+    });
+
+    const data = await res.json();
+    if (!data.success) {
+      console.error("Server-fejl:", data.error);
+    } else {
+      console.log("SMS sendt med kode:", data.code);
+    }
+  } catch (err) {
+    console.error("Kunne ikke kontakte serveren:", err);
+  }
+}
+
+// I din setTimeout, efter at du har fundet index:
+const index = Math.floor(pointerAngle / slice) % prizes.length;
+
+// vis popup i stedet for alert
+const popup = document.getElementById("popup");
+const popupText = document.getElementById("popup-text");
+const closePopup = document.getElementById("close-popup");
+
+const wonPrize = prizes[index];
+popupText.textContent = `Du landede på: ${wonPrize} 🎁`;
+popup.style.display = "flex";
+
+// NY linje: send resultat til server (Twilio)
+sendWinToServer(wonPrize);
+
+closePopup.onclick = () => {
+  popup.style.display = "none";
+};
+
 });
