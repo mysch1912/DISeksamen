@@ -1,3 +1,5 @@
+
+// ---- Dit eksisterende hjul-setup ----
 const canvas = document.getElementById("wheel"); // hjul-canvas
 const ctx = canvas.getContext("2d");
 const btn = document.getElementById("spin");
@@ -78,7 +80,7 @@ function wrapTwoLines(text, maxWidth) {
     }
   }
   if (!line2) return [line1];          // alt passede på én linje
-  // hvis linje 2 stadig er for lang, forkort lidt (nødstop for meget lange tekster) som jeg har skrevet ind i prizes-arrayet
+  // hvis linje 2 stadig er for lang, forkort lidt (nødstop for meget lange tekster)
   while (ctx.measureText(line2).width > maxWidth && line2.includes(" ")) {
     line2 = line2.replace(/\s+\S+$/, "…");
   }
@@ -92,11 +94,23 @@ let deg = 0;
 let spinning = false;
 
 // spin-knap
-btn.addEventListener("click", () => {
+btn.addEventListener("click", async () => {
   if (spinning) return;
+
   spinning = true;
   btn.disabled = true;
 
+  // NYT: tjek med serveren først, om man må spinne i dag
+  const canSpin = await checkCanSpin();
+
+  if (!canSpin) {
+    // Må ikke spinne → popup er allerede vist i checkCanSpin
+    spinning = false;
+    btn.disabled = false;
+    return;
+  }
+
+  // Må gerne spinne → nu kører animationen som før
   const extra = Math.floor(2000 + Math.random() * 3000); 
   deg += extra;
   canvas.style.transform = `rotate(${deg}deg)`;
@@ -116,18 +130,21 @@ btn.addEventListener("click", () => {
     const popupText = document.getElementById("popup-text");
     const closePopup = document.getElementById("close-popup");
 
-    popupText.textContent = `Du landede på: ${prizes[index]} 🎁`; //har tilføjet denne emoji, men hvis i vil ændre den piger, så gør i bare det
+    const wonPrize = prizes[index];
+    popupText.textContent = `Du landede på: ${wonPrize} 🎁`; 
     popup.style.display = "flex";
+
+    // send resultat til server, som sender SMS
+    sendWinToServer(wonPrize);
 
     closePopup.onclick = () => {
       popup.style.display = "none";
     };
 
   }, 5000);
+});
 
-  // ... hele din eksisterende kode ovenfor ...
-
-// NY: helper til at sende vinder til serveren
+// ---- kald backend /game/spin ----
 async function sendWinToServer(prize) {
   try {
     const res = await fetch("/game/spin", {
@@ -137,33 +154,53 @@ async function sendWinToServer(prize) {
     });
 
     const data = await res.json();
+
+    // ekstra sikkerhed, hvis server alligevel afviser
+    if (!data.success && data.reason === "already_spun") {
+      const popup = document.getElementById("popup");
+      const popupTitle = document.getElementById("popup-title");
+      const popupText = document.getElementById("popup-text");
+
+      popupTitle.textContent = "🔁 Kom tilbage i morgen";
+      popupText.textContent = data.message || "Du har allerede spinnet i dag.";
+      popup.style.display = "flex";
+      return;
+    }
+
     if (!data.success) {
       console.error("Server-fejl:", data.error);
-    } else {
-      console.log("SMS sendt med kode:", data.code);
+      return;
     }
+
+    // succes: vi har allerede vist præmien i popup'en, så vi logger bare koden
+    console.log("SMS sendt med kode:", data.code);
   } catch (err) {
     console.error("Kunne ikke kontakte serveren:", err);
   }
 }
 
-// I din setTimeout, efter at du har fundet index:
-const index = Math.floor(pointerAngle / slice) % prizes.length;
+// ---- NY: tjek med serveren, om man må spinne i dag ----
+async function checkCanSpin() {
+  try {
+    const res = await fetch("/game/check");
+    const data = await res.json();
 
-// vis popup i stedet for alert
-const popup = document.getElementById("popup");
-const popupText = document.getElementById("popup-text");
-const closePopup = document.getElementById("close-popup");
+    if (!data.canSpin) {
+      const popup = document.getElementById("popup");
+      const popupTitle = document.getElementById("popup-title");
+      const popupText = document.getElementById("popup-text");
 
-const wonPrize = prizes[index];
-popupText.textContent = `Du landede på: ${wonPrize} 🎁`;
-popup.style.display = "flex";
+      popupTitle.textContent = "🔁 Kom tilbage i morgen";
+      popupText.textContent =
+        data.message || "Du har brugt dit spin for i dag, kom tilbage i morgen!";
+      popup.style.display = "flex";
 
-// NY linje: send resultat til server (Twilio)
-sendWinToServer(wonPrize);
+      return false;
+    }
 
-closePopup.onclick = () => {
-  popup.style.display = "none";
-};
-
-});
+    return true;
+  } catch (err) {
+    console.error("Fejl ved checkCanSpin:", err);
+    return false;
+  }
+}
