@@ -1,6 +1,7 @@
 // src/controllers/registerController.js
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcrypt");
 
 const userFile = path.join(__dirname, "../data/users.json");
 
