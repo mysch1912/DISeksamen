@@ -1,6 +1,6 @@
 const db = require("../data/db");
 
-async function findUser(phone, password) {
+async function findUserByPhone(phone) {
   const [rows] = await db.query(
     "SELECT * FROM users WHERE phone = ? AND password = ?",
     [phone, password]
@@ -16,6 +16,6 @@ async function createUser(phone, hashedPassword) {
 }
 
 module.exports = {
-  findUser,
+  findUserByPhone,
   createUser
 };

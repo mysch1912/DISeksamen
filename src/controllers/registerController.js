@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
     return res.json({ status: "exists" });
   }
 
-  // Hash password
+  // Hash password 
   const hashed = await bcrypt.hash(password, 10);
 
   // Opret bruger i MySQL
