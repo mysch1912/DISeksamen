@@ -1,36 +1,25 @@
-// src/controllers/registerController.js
-const fs = require("fs");
-const path = require("path");
 const bcrypt = require("bcrypt");
+const { findByPhone, createUser } = require("../models/userModel");
 
-const userFile = path.join(__dirname, "../data/users.json");
-
-let users = [];
-
-// Indlæs brugere hvis fil findes
-if (fs.existsSync(userFile)) {
-  users = JSON.parse(fs.readFileSync(userFile));
-}
-
-exports.register = (req, res) => {
+exports.register = async (req, res) => {
   const { phone, password } = req.body;
 
-  // Hvis felter mangler
+  // Manglende felter
   if (!phone || !password) {
     return res.json({ status: "missing" });
   }
 
-  // Tjek om telefon allerede findes
-  const exists = users.find(u => u.phone === phone);
+  // Find om bruger findes
+  const exists = await findByPhone(phone);
   if (exists) {
     return res.json({ status: "exists" });
   }
 
-  // Opret ny bruger
-  users.push({ phone, password });
+  // Hash password
+  const hashed = await bcrypt.hash(password, 10);
 
-  // Gem til fil
-  fs.writeFileSync(userFile, JSON.stringify(users, null, 2));
+  // Opret bruger i MySQL
+  await createUser(phone, hashed);
 
   return res.json({ status: "ok" });
 };
