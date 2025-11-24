@@ -1,11 +1,14 @@
-require("dotenv").config();       // .env ligger i src/
-const pool = require("./data/db");
+require("dotenv").config({ override: true }); // 👈 vigtigt
+const { sql, poolPromise } = require("./data/db");
 
 async function testConnection() {
   try {
-    console.log("DB_HOST:", process.env.DB_HOST); // debug
-    const [rows] = await pool.query("SELECT 1 + 1 AS result");
-    console.log("DB virker! Result:", rows[0].result);
+    console.log("DB_HOST:", process.env.DB_HOST);
+    console.log("DB_USER:", process.env.DB_USER); // 👈 tjek hvad der bruges
+
+    const pool = await poolPromise;
+    const result = await pool.request().query("SELECT 1 + 1 AS result");
+    console.log("DB virker! Result:", result.recordset[0].result);
   } catch (err) {
     console.error("Fejl ved DB-forbindelse:", err);
   } finally {
@@ -14,3 +17,4 @@ async function testConnection() {
 }
 
 testConnection();
+
