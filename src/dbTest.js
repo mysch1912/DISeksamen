@@ -1,12 +1,16 @@
-// i app.js eller en test-route
+require("dotenv").config();       // .env ligger i src/
 const pool = require("./data/db");
 
-app.get("/db-test", async (req, res) => {
+async function testConnection() {
   try {
+    console.log("DB_HOST:", process.env.DB_HOST); // debug
     const [rows] = await pool.query("SELECT 1 + 1 AS result");
-    res.send(`DB virker! Result: ${rows[0].result}`);
+    console.log("DB virker! Result:", rows[0].result);
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Fejl ved DB-forbindelse");
+    console.error("Fejl ved DB-forbindelse:", err);
+  } finally {
+    process.exit();
   }
-});
+}
+
+testConnection();
