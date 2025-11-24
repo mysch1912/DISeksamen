@@ -102,7 +102,7 @@ btn.addEventListener("click", async () => {
 
   // NYT: tjek med serveren først, om man må spinne i dag
   const canSpin = await checkCanSpin();
-
+  
   if (!canSpin) {
     // Må ikke spinne → popup er allerede vist i checkCanSpin
     spinning = false;
