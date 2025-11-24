@@ -1,4 +1,3 @@
-// src/services/twilioService.js
 const twilio = require("twilio");
 
 const client = twilio(
@@ -6,12 +5,21 @@ const client = twilio(
   process.env.TWILIO_AUTH_TOKEN
 );
 
-async function sendPrizeSms(toPhone, prize, code) {
-  return client.messages.create({
-    to: toPhone,
-    from: process.env.TWILIO_PHONE_NUMBER,
-    body: `Tillykke! Du vandt: ${prize}. Din kode er: ${code}`
-  });
+async function sendSMS(to, message) {
+  try {
+    const result = await client.messages.create({
+      body: message,
+      from: process.env.TWILIO_FROM_NUMBER,
+      to: to
+    });
+
+    console.log("SMS sendt:", result.sid);
+    return result;
+  } catch (err) {
+    console.error("Fejl ved SMS:", err);
+    throw err;
+  }
 }
 
-module.exports = { sendPrizeSms };
+module.exports = { sendSMS };
+
