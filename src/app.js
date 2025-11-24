@@ -55,7 +55,7 @@ const express = require("express");
 const path = require("path");
 const session = require("express-session");
 
-// 
+// Tjek nødvendige miljøvariabler
 if (!process.env.SESSION_SECRET){
   throw new Error("SESSION_SECRET mangler i .env")
 }
