@@ -49,7 +49,45 @@ async function checkSpin(req, res) {
   }
 }
 
-// 🔹 EKSISTERENDE: selve spin + SMS + opdatering af lastSpinByPhone
+// src/controllers/gameController.js
+const PRIZES = ["10%", "20%", "30%", "Væske", "Gratis vask"];
+
+async function spinWheel(req, res) {
+  try {
+    const user = req.session.user;
+
+    if (!user || !user.phone) {
+      return res.status(401).json({ success: false, error: "Ikke logget ind" });
+    }
+
+    const phone = user.phone;
+    const today = getDanishDateString();
+
+    if (lastSpinByPhone[phone] === today) {
+      return res.json({
+        success: false,
+        reason: "already_spun",
+      });
+    }
+
+    // SERVER vælger præmie
+    const prize = PRIZES[Math.floor(Math.random() * PRIZES.length)];
+
+    lastSpinByPhone[phone] = today;
+
+    const code = generateCode();
+    await sendPrizeSms(phone, prize, code);
+
+    return res.json({ success: true, prize, code });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false });
+  }
+}
+
+
+/*// gammelt!!🔹 EKSISTERENDE: selve spin + SMS + opdatering af lastSpinByPhone
 async function spinWheel(req, res) {
   try {
     const { prize } = req.body;
@@ -98,7 +136,7 @@ async function spinWheel(req, res) {
       .status(500)
       .json({ success: false, error: "Serverfejl" });
   }
-}
+}*/
 
 // 🔹 VIGTIGT: Eksportér BEGGE funktioner
 module.exports = { spinWheel, checkSpin };

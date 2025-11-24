@@ -78,7 +78,7 @@ app.use(express.urlencoded({ extended: true }));
 // Session-håndtering
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "hemmelighed",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
