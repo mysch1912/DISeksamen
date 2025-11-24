@@ -1,9 +1,9 @@
 const db = require("../data/db");
 
-async function findUserByPhone(phone, password) {
+async function findUserByPhone(phone) {
   const [rows] = await db.query(
     "SELECT * FROM users WHERE phone = ? AND password = ?",
-    [phone, password]
+    [phone]
   );
   return rows[0];
 }

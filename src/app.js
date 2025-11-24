@@ -55,6 +55,11 @@ const express = require("express");
 const path = require("path");
 const session = require("express-session");
 
+// 
+if (!process.env.SESSION_SECRET){
+  throw new Error("SESSION_SECRET mangler i .env")
+}
+
 // initialiser "model/data"-laget (DB)
 require("./data/db.js");
 
@@ -64,6 +69,7 @@ const gameRoute = require("./routes/gameRoute");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isProd = process.env.NODE_ENV === "production";
 
 // Body parsing
 app.use(express.json());
@@ -75,6 +81,12 @@ app.use(
     secret: process.env.SESSION_SECRET || "hemmelighed",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: isProd, //kun true i production (kræver HTTPS)
+      sameSite: "strict",
+      maxAge: 1000 * 60 * 60 * 2, //2 timer
+    },
   })
 );
 
