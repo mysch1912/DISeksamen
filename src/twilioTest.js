@@ -1,4 +1,4 @@
-require("dotenv").config({ override: true });
+require("dotenv").config({ path: "../.env", override: true });
 const { sendSMS } = require("./services/twilioService");
 
 async function run() {
@@ -6,7 +6,7 @@ async function run() {
     console.log("➡️ Sender SMS test...");
 
     await sendSMS(
-      "+4581193141", 
+      "+4530705510", // mys nr 30705510 celinas nr81193141
       "Test fra din DIS-app – Twilio virker! 🚀"
     );
 
