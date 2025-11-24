@@ -2,7 +2,7 @@ const db = require("../data/db");
 
 async function findUserByPhone(phone) {
   const [rows] = await db.query(
-    "SELECT * FROM users WHERE phone = ? AND password = ?",
+    "SELECT * FROM users WHERE phone = ?",
     [phone]
   );
   return rows[0];
