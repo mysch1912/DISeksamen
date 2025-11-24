@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { findByPhone, createUser } = require("../models/userModel");
+const {createUser, findUserByPhone } = require("../models/userModel");
 
 exports.register = async (req, res) => {
   const { phone, password } = req.body;
@@ -10,7 +10,7 @@ exports.register = async (req, res) => {
   }
 
   // Find om bruger findes
-  const exists = await findByPhone(phone);
+  const exists = await findUserByPhone(phone);
   if (exists) {
     return res.json({ status: "exists" });
   }
