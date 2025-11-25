@@ -15,11 +15,10 @@ jobs:
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
-with:
-  host: ${{ secrets.DROPLET_HOST }}
-  username: ${{ secrets.DROPLET_USER }}
-  password: ${{ secrets.DROPLET_PASSWORD }}
-  script: |
-    cd ~/DISeksamen
-    ./deploy.sh
-
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USER }}
+          password: ${{ secrets.DROPLET_PASSWORD }}
+          script: |
+            cd ~/DISeksamen
+            ./deploy.sh
