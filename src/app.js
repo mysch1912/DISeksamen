@@ -75,7 +75,14 @@ const isProd = process.env.NODE_ENV === "production";
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(helmet());
+
+//sikkerheds headers 
+app.use(
+  helmet({
+    contentSecurityPolicy: false, //slår csp fra 
+    crossOriginEmbedderPolicy: false, //slår coep fra 
+  })
+);
 
 // Session-håndtering
 app.use(
