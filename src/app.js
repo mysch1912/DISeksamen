@@ -54,6 +54,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
+const helmet = require("helmet");
 
 // Tjek nødvendige miljøvariabler
 if (!process.env.SESSION_SECRET){
@@ -74,6 +75,7 @@ const isProd = process.env.NODE_ENV === "production";
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(helmet());
 
 // Session-håndtering
 app.use(
