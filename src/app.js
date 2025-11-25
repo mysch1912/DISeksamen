@@ -55,6 +55,7 @@ const express = require("express");
 const path = require("path");
 const session = require("express-session");
 const helmet = require("helmet");
+const loginLimiter = require("./middleware/loginLimiter.js");
 
 // Tjek nødvendige miljøvariabler
 if (!process.env.SESSION_SECRET){
@@ -114,6 +115,9 @@ app.get("/wheel", (req, res) => {
   }
   res.sendFile(path.join(__dirname, "public", "wheel.html"));
 });
+
+//rate limiting på login endpoint 
+app.use("/auth/login", loginLimiter);
 
 // API-routes (C i MVC)
 app.use("/auth", authRoute);

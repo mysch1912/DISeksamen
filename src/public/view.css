@@ -2,7 +2,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #34495e;
+    background-color: #05290a;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,7 +14,7 @@ body {
     top: 40px;
     width: 100%;
     text-align: center;
-    color: #ffffff;
+    color: #f3f17e;
     font-size: 3rem;
     letter-spacing: 2px;
     font-family: 'Poppins', sans-serif;
@@ -28,7 +28,7 @@ body {
     top: 95px;
     width: 100%;
     text-align: center;
-    color: #9ec8ff;
+    color:  #ffffff;
     font-size: 1.3rem;
     font-family: 'Poppins', sans-serif;
     font-weight: 400;
@@ -134,7 +134,33 @@ body {
   #close-popup:hover {
     background: #43a047;
   }
+
+   button {
+    width: 100%;
+    padding: 12px;
+    background:  #f3f17e;
+    border: none;
+    color: rgb(0, 0, 0);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  button:hover {
+    background: #ded355;
+  }
   
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
   /* Animationer kan godt være lidt forvirrende at forstå*/
   @keyframes fadeIn { /* for popup-baggrunden */
     from { opacity: 0; } /* start gennemsigtig */
