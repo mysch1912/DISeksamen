@@ -20,7 +20,7 @@ async function sendSMS(to, message) {
     return result;
 
   } catch (err) {
-    console.error("Fejl ved SMS:", err);
+    console.error("fejl ved SMS:", err);
     throw err;
   }
 }
