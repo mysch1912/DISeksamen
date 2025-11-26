@@ -58,8 +58,8 @@ const helmet = require("helmet");
 const loginLimiter = require("./middleware/loginLimiter.js");
 
 // Tjek nødvendige miljøvariabler
-if (!process.env.SESSION_SECRET){
-  throw new Error("SESSION_SECRET mangler i .env")
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET mangler i .env");
 }
 
 // initialiser "model/data"-laget (DB)
@@ -73,15 +73,15 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === "production";
 
-// Body parsing
+// Body parsing – SKAL ligge EFTER app = express() og FØR routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//sikkerheds headers 
+// sikkerheds headers
 app.use(
   helmet({
-    contentSecurityPolicy: false, //slår csp fra 
-    crossOriginEmbedderPolicy: false, //slår coep fra 
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
   })
 );
 
@@ -93,9 +93,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: isProd, //kun true i production (kræver HTTPS)
+      secure: isProd,
       sameSite: "strict",
-      maxAge: 1000 * 60 * 60 * 2, //2 timer
+      maxAge: 1000 * 60 * 60 * 2, // 2 timer
     },
   })
 );
@@ -116,17 +116,16 @@ app.get("/wheel", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "wheel.html"));
 });
 
-//rate limiting på login endpoint 
+// rate limiting på login endpoint (kører FØR authRoute)
 app.use("/auth/login", loginLimiter);
 
 // API-routes (C i MVC)
 app.use("/auth", authRoute);
 app.use("/game", gameRoute);
 
-// Start server (Azure bruger PORT fra env)
+// Start server
 app.listen(PORT, () => {
   console.log(`Server kører på port ${PORT}`);
 });
 
-// valgfrit til tests, men skader ikke:
 module.exports = app;
