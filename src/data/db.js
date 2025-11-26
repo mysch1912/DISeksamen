@@ -1,19 +1,22 @@
+//data/db.js
 const sql = require("mssql");
 
+//konfigurationsobjekt til Azure SQL Database
 const config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  server: process.env.DB_HOST, // fx dis-app.database.windows.net
-  port: 1433,                  // SQL Server standardport
+  server: process.env.DB_HOST, 
+  port: 1433, //SQL server standardport
   options: {
-    encrypt: true,             // kræves til Azure SQL
+    encrypt: true, 
     trustServerCertificate: false,
   },
 };
 
-// Én fælles pool-forbindelse til hele app’en
+//en fælles pool forbindelse til hele appen
 const poolPromise = sql
+  //opretter forbindelse til Azure SQL Database
   .connect(config)
   .then((pool) => {
     console.log("Forbundet til Azure SQL Database");

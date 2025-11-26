@@ -1,4 +1,4 @@
-/* Generelle stilarter */
+/*grundlæggende styling*/
 body {
     margin: 0;
     padding: 0;
@@ -40,7 +40,7 @@ body {
     position: relative;
   }
   
-  /* Canvas-hjulet */
+  /*canvas hjulet*/
   #wheel {
     border-radius: 50%;
     border: 12px solid #eee;
@@ -48,7 +48,7 @@ body {
     transition: transform 5s cubic-bezier(0.17, 0.67, 0.83, 1.03);
   }
   
-  /* SPIN-knappen */
+  /*spin knappen*/
   #spin {
     position: absolute;
     top: 50%;
@@ -67,24 +67,24 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   }
   
-/* PILEN: sidder øverst, men peger NED mod hjulet */
+/*pilen mod hjulet*/
 .arrow {
     position: absolute;
-    top: -25px; /* så den overlapper kanten ligesom før */
+    top: -25px; /*så den overlapper kanten ligesom før */
     left: 50%;
-    transform: translateX(-50%) rotate(180deg); /* vender den på hovedet */
+    transform: translateX(-50%) rotate(180deg); /*vender den på hovedet*/
     width: 0;
     height: 0;
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
-    border-bottom: 25px solid #fff; /* original form, men nu roteret */
+    border-bottom: 25px solid #fff; 
     z-index: 20;
     pointer-events: none;
   }
 
-  /* --- Resultat-popup --- */
+/*resultat popup*/
 .popup {
-    display: none; /* skjult som udgangspunkt */
+    display: none; 
     position: fixed;
     top: 0;
     left: 0;
@@ -161,15 +161,16 @@ input[type="password"] {
   box-sizing: border-box;
 }
 
-  /* Animationer kan godt være lidt forvirrende at forstå*/
-  @keyframes fadeIn { /* for popup-baggrunden */
-    from { opacity: 0; } /* start gennemsigtig */
-    to { opacity: 1; } /* det fader ind */
+  /*animationer*/
+  @keyframes fadeIn { 
+    from { opacity: 0; } 
+    to { opacity: 1; } 
   }
-  
+
+  /*popIn animation*/
   @keyframes popIn {
-    from { transform: scale(0.8); opacity: 0; } /* starter lille og gennemsigtig */
-    to { transform: scale(1); opacity: 1; } /* vokser til normal størrelse og bliver fuldt synlig */
+    from { transform: scale(0.8); opacity: 0; } 
+    to { transform: scale(1); opacity: 1; } 
   }
   
   

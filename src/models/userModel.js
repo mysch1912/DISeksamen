@@ -1,10 +1,11 @@
-// src/models/userModel.js
+//models/userModel.js
 const { sql, poolPromise } = require("../data/db");
 
-// find bruger ud fra telefon
+//finder bruger ud fra telefonnummer
 async function findUserByPhone(phone) {
   const pool = await poolPromise;
 
+  //udfører query
   const result = await pool
     .request()
     .input("phone", sql.VarChar, phone)
@@ -13,10 +14,11 @@ async function findUserByPhone(phone) {
   return result.recordset[0];
 }
 
-// opret bruger
+//opretter bruger i databasen
 async function createUser(phone, hashedPassword) {
   const pool = await poolPromise;
 
+  //udfører insert query
   await pool
     .request()
     .input("phone", sql.VarChar, phone)

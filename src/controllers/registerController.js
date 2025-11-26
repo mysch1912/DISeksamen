@@ -1,25 +1,28 @@
+//controllers/registerController.js
 const bcrypt = require("bcrypt");
 const {createUser, findUserByPhone } = require("../models/userModel");
 
+//register funktion
 exports.register = async (req, res) => {
   const { phone, password } = req.body;
 
-  // Manglende felter
+  //tjek for manglende felter
   if (!phone || !password) {
     return res.json({ status: "missing" });
   }
 
-  // Find om bruger findes
+  //tjekker om bruger findes
   const exists = await findUserByPhone(phone);
   if (exists) {
     return res.json({ status: "exists" });
   }
 
-  // Hash password 
+  //hash password 
   const hashed = await bcrypt.hash(password, 10);
+  console.log("Register hashed password:", hashed); //test hashed password
 
-  // Opret bruger i MySQL 
+  //opretter bruger i MySQL 
   await createUser(phone, hashed);
 
-  return res.json({ status: "ok" });
+  return res.json({ status: "OK" });
 };

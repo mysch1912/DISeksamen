@@ -1,34 +1,34 @@
-// src/controllers/gameController.js
+//controllers/gameController.js
 const { sendPrizeSms } = require("../services/twilioService");
 
-// Holder styr på sidste spin pr. bruger i hukommelse
+//holder styr på sidste spin pr. bruger i hukommelsen
 const lastSpinByPhone = {};
 
-// Præmier – SERVEREN bestemmer, ikke frontend
+//serveren bestemmer præmien, ikke frontend
 const PRIZES = [
-  "10% rabat på en valgfri oplevelse",
-  "Bedre held næste gang",
-  "2 for 1 oplevelsespris",
-  "ØV!",
-  "15% rabat på en valgfri oplevelse",
-  "Bedre held næste gang",
-  "100 kr. rabat på en valgfri oplevelse",
-  "ØV!"
+  "10% discount on a optional experience",
+  "Better luck next time",
+  "2 for 1 experience price",
+  "Too bad!",
+  "15% discount on a optional experience",
+  "Better luck next time",
+  "100 kr. discount on a optional experience",
+  "Too bad!"
 ];
 
-// Hjælpefunktion til kuponkode
+//hjælpefunktion til kuponkode
 function generateCode() {
   return "UST-" + Math.random().toString(36).substring(2, 8).toUpperCase();
 }
 
-// Dato i dansk tid
+//dato i dansk tid
 function getDanishDateString() {
   return new Date().toLocaleDateString("da-DK", {
     timeZone: "Europe/Copenhagen",
   });
 }
 
-// Tjek om brugeren må spinne
+//tjek om brugeren må spinne
 async function checkSpin(req, res) {
   try {
     const user = req.session.user;
@@ -36,29 +36,31 @@ async function checkSpin(req, res) {
     if (!user || !user.phone) {
       return res
         .status(401)
-        .json({ canSpin: false, error: "Ikke logget ind" });
+        .json({ canSpin: false, error: "You are not logged in" });
     }
 
     const phone = user.phone;
     const today = getDanishDateString();
 
-    // Allerede spinnet i dag?
+    //tjekker om brugeren allerede har spinnet i dag
     if (lastSpinByPhone[phone] === today) {
       return res.json({
         canSpin: false,
         message:
-          "Du har brugt dit spin for i dag – kom tilbage i morgen! 🎡🇩🇰",
+          "You have used your spin for today – come back tomorrow! 🎡🇩🇰",
       });
     }
 
-    return res.json({ canSpin: true });
+  //brugeren kan spinne
+  return res.json({ canSpin: true });
+
   } catch (err) {
-    console.error("Fejl i checkSpin:", err);
-    return res.status(500).json({ canSpin: false, error: "Serverfejl" });
+    console.error("fejl i checkSpin:", err);
+    return res.status(500).json({ canSpin: false, error: "Server error" });
   }
 }
 
-// Selve spin-ruten
+//selve spin ruten
 async function spinWheel(req, res) {
   try {
     const user = req.session.user;
@@ -66,32 +68,32 @@ async function spinWheel(req, res) {
     if (!user || !user.phone) {
       return res
         .status(401)
-        .json({ success: false, error: "Ikke logget ind" });
+        .json({ success: false, error: "You are not logged in" });
     }
 
     const phone = user.phone;
     const today = getDanishDateString();
 
-    // Har brugeren allerede spinnet i dag?
+    //tjekker om brugeren allerede har spinnet i dag
     if (lastSpinByPhone[phone] === today) {
       return res.json({
         success: false,
         reason: "already_spun",
-        message: "Du har brugt dit spin for i dag – prøv igen i morgen! 🎡"
+        message: "You have already used your spin for today – try again tomorrow! 🎡"
       });
     }
 
-    // 👉 SERVEREN vælger præmien
+    //serveren vælger tilfældig præmie
     const prize = PRIZES[Math.floor(Math.random() * PRIZES.length)];
 
-    // Markér dagens spin som brugt
+    //markerer at brugeren har spinnet i dag
     lastSpinByPhone[phone] = today;
 
-    // Generer kode og send SMS
+    //sender SMS med præmie og kode
     const code = generateCode();
     await sendPrizeSms(phone, prize, code);
 
-    // Send præmie + kode tilbage til frontend
+    //sender præmie og kode tilbage til frontend
     return res.json({
       success: true,
       prize,
@@ -100,9 +102,8 @@ async function spinWheel(req, res) {
 
   } catch (err) {
     console.error("Fejl i spinWheel:", err);
-    return res.status(500).json({ success: false, error: "Serverfejl" });
+    return res.status(500).json({ success: false, error: "Server error" });
   }
 }
 
-// 🔹 VIGTIGT: Eksportér BEGGE funktioner
 module.exports = { spinWheel, checkSpin };

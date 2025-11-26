@@ -1,26 +1,27 @@
-// wheel setup 
+//wheel setup 
 const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
 const btn = document.getElementById("spin");
 
-// Farver og præmier, som kun bruges til GRAFIK
+//farver og præmier, som kun bruges til grafik
 const colors = [
   "#3f51b5", "#ff9800", "#e91e63", "#4caf50",
   "#009688", "#795548", "#9c27b0", "#f44336"
 ];
 
+//præmier
 const prizes = [
-  "10% rabat på en valgfri oplevelse",
-  "Bedre held næste gang",
-  "2 for 1 oplevelsespris",
-  "ØV!",
-  "15% rabat på en valgfri oplevelse",
-  "Bedre held næste gang",
-  "100 kr. rabat på en valgfri oplevelse",
-  "ØV!"
+  " 10% discount on a optional experience",
+  "Better luck next time",
+  "2 for 1 experience price",
+  "Too bad!",
+  "15% discount on a optional experience",
+  "Better luck next time",
+  "100 kr. discount on a optional experience",
+  "Too bad!"
 ];
 
-//wheel tegning
+//hjul tegning
 function drawWheel() {
   const c = canvas.width / 2;
   const r = c;
@@ -28,10 +29,11 @@ function drawWheel() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height); //ryd canvas
 
+  //tegn sektorer
   for (let i = 0; i < prizes.length; i++) {
     const start = i * arc;
 
-    // Sektor
+    //sektor
     ctx.beginPath();
     ctx.fillStyle = colors[i];
     ctx.moveTo(c, c);
@@ -39,7 +41,7 @@ function drawWheel() {
     ctx.closePath();
     ctx.fill();
 
-    // Tekst
+    //tekst
     ctx.save();
     ctx.translate(c, c);
     ctx.rotate(start + arc / 2);
@@ -51,6 +53,7 @@ function drawWheel() {
     const lines = wrapTwoLines(prizes[i], maxWidth);
     const x = r - 24;
 
+    //tegn linjer
     if (lines.length === 1) {
       ctx.fillText(lines[0], x, 5);
     } else {
@@ -62,6 +65,7 @@ function drawWheel() {
   }
 }
 
+//hjælpefunktion til at dele tekst i to linjer
 function wrapTwoLines(text, maxWidth) {
   const words = text.split(" ");
   let line1 = "", line2 = "";
@@ -91,14 +95,14 @@ drawWheel();
 let deg = 0;
 let spinning = false;
 
-//spin knap
+//spin knap 
 btn.addEventListener("click", async () => {
   if (spinning) return;
 
   spinning = true;
   btn.disabled = true;
 
-  // Før spin: check at man må
+  //tjekker om man må spinne før der spinnes
   const canSpin = await checkCanSpin();
 
   if (!canSpin) {
@@ -107,45 +111,47 @@ btn.addEventListener("click", async () => {
     return;
   }
 
-  // Selve spinanimationen
+  //selve spinanimationen
   const extra = Math.floor(2000 + Math.random() * 3000);
   deg += extra;
   canvas.style.transform = `rotate(${deg}deg)`;
 
-  // Når animationen er færdig
+  //når animationen er færdig
   setTimeout(() => {
     spinning = false;
     btn.disabled = false;
 
-    // Åbn popup mens vi venter på backend
+    //åbn popup mens backend vælger præmie
     const popup = document.getElementById("popup");
     const popupText = document.getElementById("popup-text");
-    popupText.textContent = "Finder din præmie… 🔍";
+    popupText.textContent = "Finding your prize… 🔍";
     popup.style.display = "flex";
 
-    // Backend vælger præmien
+    //backend vælger præmien
     sendWinToServer().then((data) => {
       if (!data) {
-        popupText.textContent = "Der skete en fejl — prøv igen.";
+        popupText.textContent = "An error occurred — please try again.";
         return;
       }
 
+      //håndterer allerede spinnet i dag
       if (!data.success && data.reason === "already_spun") {
         popupText.textContent =
-          data.message || "Du har allerede spinnet i dag.";
+          data.message || "You have already spun today.";
         return;
       }
 
+      //håndterer andre fejl
       if (!data.success) {
-        popupText.textContent = "Serverfejl — prøv igen.";
+        popupText.textContent = "Server error — please try again.";
         return;
       }
 
-      // ✔ Vis præmien valgt af backend
-      popupText.textContent = `🎉 Du vandt: ${data.prize} 🎁\nKode: ${data.code}`;
+      //viser præmien valgt af backend
+      popupText.textContent = `🎉 You won: ${data.prize} 🎁\nCode: ${data.code}`;
     });
 
-    // Luk popup
+    //luk popup
     const closePopup = document.getElementById("close-popup");
     closePopup.onclick = () => {
       popup.style.display = "none";
@@ -154,7 +160,7 @@ btn.addEventListener("click", async () => {
   }, 5000);
 });
 
-// Backend vælger præmie — ingen body
+//sender spin request til serveren
 async function sendWinToServer() {
   try {
     const res = await fetch("/game/spin", {
@@ -165,24 +171,26 @@ async function sendWinToServer() {
     return await res.json();
 
   } catch (err) {
-    console.error("Kunne ikke kontakte serveren:", err);
+    console.error("Could not contact the server:", err);
     return null;
   }
 }
 
+//tjekker om brugeren kan spinne i dag
 async function checkCanSpin() {
   try {
     const res = await fetch("/game/check");
     const data = await res.json();
 
+    //popup hvis brugeren ikke kan spinne
     if (!data.canSpin) {
       const popup = document.getElementById("popup");
       const popupTitle = document.getElementById("popup-title");
       const popupText = document.getElementById("popup-text");
 
-      popupTitle.textContent = "🔁 Kom tilbage i morgen";
+      popupTitle.textContent = "🔁 Come back tomorrow";
       popupText.textContent =
-        data.message || "Du har brugt dit spin for i dag.";
+        data.message || "You have used your spin for today.";
 
       popup.style.display = "flex";
 

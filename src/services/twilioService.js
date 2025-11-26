@@ -1,11 +1,13 @@
+//services/twilioService.js
 const twilio = require("twilio");
 
+//opsætning af Twilio klient
 const client = twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
 
-// GENEREL SMS-FUNKTION (bruges til test og interne beskeder)
+//generel SMS funktion (bruges til test og interne beskeder)
 async function sendSMS(to, message) {
   try {
     const result = await client.messages.create({
@@ -23,9 +25,9 @@ async function sendSMS(to, message) {
   }
 }
 
-// PRÆMIE-SMS (bruges af gameController)
+//præmie SMS funktion
 async function sendPrizeSms(phone, prize, code) {
-  const message = `Tillykke! Du vandt: ${prize}\nDin kode: ${code}\nBrug den i dag 🌟`;
+  const message = `Congratulations! You won: ${prize}\nYour code: ${code}\nUse it today 🌟`;
   return sendSMS("+45" + phone, message);
 }
 
