@@ -1,23 +1,29 @@
 <!DOCTYPE html>
-<html lang="da">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="view.css">
+  <meta charset="UTF-8" />
   <title>Spin & Win</title>
+  <link rel="stylesheet" href="view.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
+  <!-- TITLER -->
   <h1 class="title">SPIN & WIN</h1>
-  <p class="subtitle">Understory</p>
+  <h2 class="subtitle">Understory</h2>
 
+  <!-- HJUL + PIL + KNAP -->
   <div class="wrapper">
+    <!-- 🔺 PILEN – matcher .arrow i din CSS -->
     <div class="arrow"></div>
 
+    <!-- Selve hjulet -->
     <canvas id="wheel" width="500" height="500"></canvas>
 
+    <!-- Spin-knap i midten -->
     <button id="spin">SPIN</button>
   </div>
 
+  <!-- RESULTAT-POPUP -->
   <div id="popup" class="popup">
     <div class="popup-content">
       <h2 id="popup-title">🎉 You won!</h2>
@@ -29,3 +35,4 @@
   <script src="view.js"></script>
 </body>
 </html>
+
