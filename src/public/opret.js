@@ -25,7 +25,7 @@ document.getElementById("create-btn").addEventListener("click", async () => {
       msg.textContent = "This phone number is already in use.";
     } else if (data.status === "missing") {
       msg.textContent = "Please fill in all fields.";
-    } else if (data.status === "ok") {
+    } else {
       msg.style.color = "green";
       msg.textContent = "User created! Redirecting...";
       setTimeout(() => {
