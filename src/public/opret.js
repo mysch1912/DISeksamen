@@ -6,7 +6,7 @@ document.getElementById("create-btn").addEventListener("click", async () => {
     const msg = document.getElementById("msg");
   
     if (!phone || !password) {
-      msg.textContent = "Please fill in both fields ✏️";
+      msg.textContent = "Please fill in both fields";
       return;
     }
   
@@ -29,7 +29,7 @@ document.getElementById("create-btn").addEventListener("click", async () => {
       msg.style.color = "green";
       msg.textContent = "User created! Redirecting...";
       setTimeout(() => {
-        window.location.href = "view.html"; //login siden
+        window.location.href = "/wheel"; //login siden
       }, 1200);
     }
   });
