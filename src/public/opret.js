@@ -19,7 +19,8 @@ document.getElementById("create-btn").addEventListener("click", async () => {
   
     //henter svar fra serveren
     const data = await res.json();
-  
+    console.log("REGISTER RESPONSE:", data);
+
     //håndterer forskellige svar
     if (data.status === "exists") {
       msg.textContent = "This phone number is already in use.";
