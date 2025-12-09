@@ -24,5 +24,6 @@ exports.register = async (req, res) => {
   //opretter bruger i MySQL 
   await createUser(phone, hashed);
 
+  req.session.user = { phone };
   return res.json({ status: "ok" });
 };
