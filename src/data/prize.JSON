@@ -1,14 +1,10 @@
 [
   { "name": "10% discount on an optional experience", "weight": 1 },
   { "name": "Better luck next time #1",               "weight": 3 },
-  { "name": "2 for 1 experience price",               "weight": 1 },
+  { "name": "2 for 1 experience pricee",               "weight": 1 },
   { "name": "Too bad! #1",                            "weight": 3 },
   { "name": "15% discount on an optional experience", "weight": 1 },
   { "name": "Better luck next time #2",               "weight": 3 },
   { "name": "100 kr. discount on an optional experience", "weight": 1 },
   { "name": "Too bad! #2",                            "weight": 3 }
 ]
-
-
-
-  
