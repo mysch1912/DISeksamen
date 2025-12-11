@@ -3,7 +3,7 @@ name: Deploy to Droplet
 on:
   push:
     branches:
-      - main   # hvis jeres branch hedder noget andet, så skift her
+      - main   
 
 jobs:
   deploy:
